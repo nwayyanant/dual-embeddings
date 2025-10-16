@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Pāli–English Semantic Search</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  /static/styles.css
+</head>
+<body>
+  <header>
+    <h1>Pāli–English Semantic Search</h1>
+    <p class="sub">Hybrid BM25 + LaBSE embeddings • RAG with citations</p>
+  </header>
+
+  <section class="controls">
+    <div class="row">
+      <label for="q">Query</label>
+      <input id="q" type="text" placeholder="Type a query (e.g., anicca or 'What is Abhidhamma?')" autofocus/>
+      <button id="btnSearch">Search</button>
+      <button id="btnAnswer">Ask (RAG)</button>
+    </div>
+    <div class="row">
+      <label for="topk">Top‑K</label>
+      <input id="topk" type="number" min="1" max="50" value="10"/>
+      <label for="alpha">Blend α</label>
+      <input id="alpha" type="range" min="0" max="1" step="0.05" value="0.5"/>
+      <span id="alphaVal">0.50</span>
+      <span id="langBadge" class="badge">lang: —</span>
+    </div>
+  </section>
+
+  <main class="grid">
+    <section>
+      <h2>Results</h2>
+      <div id="results" class="list"></div>
+    </section>
+
+    <aside>
+      <h2>Answer</h2>
+      <pre id="answer" class="answer"></pre>
+      <h3>Citations</h3>
+      <div id="citations" class="list citations"></div>
+    </aside>
+  </main>
+
+  <footer>
+    <small>API: <code id="apiBase"></code> • Built for local research.</small>
+  </footer>
+
+  <script>
+    // Embed API_BASE from server-side
+    const API_BASE = "{{ api_base }}"; // or whatever port your backend is running on
+  </script>
+  /static/app.js
+</body>
+</html>

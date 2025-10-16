@@ -1,0 +1,54 @@
+:root {
+  --bg: #0e0f12;
+  --fg: #e9eef9;
+  --muted: #9fb0cc;
+  --accent: #5fa8ff;
+  --accent2: #3bd1c2;
+  --border: #1f2330;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 1.2rem 1.4rem;
+  background: var(--bg); color: var(--fg);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+}
+header h1 { margin: 0 0 0.25rem; font-size: 1.4rem; }
+header .sub { margin: 0 0 1rem; color: var(--muted); }
+
+.controls { background: #12141a; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 1rem; }
+.controls .row { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+.controls label { color: var(--muted); }
+.controls input[type="text"] { flex: 1; padding: 0.6rem; border-radius: 6px; border: 1px solid var(--border); background: #0c0d11; color: var(--fg); }
+.controls input[type="number"] { width: 80px; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--border); background: #0c0d11; color: var(--fg); }
+.controls input[type="range"] { width: 160px; }
+.controls button {
+  padding: 0.55rem 0.9rem; border: 1px solid var(--border);
+  border-radius: 6px; background: #161925; color: var(--fg); cursor: pointer;
+}
+.controls button:hover { border-color: var(--accent); }
+
+.badge {
+  border: 1px dashed var(--border);
+  padding: 0.2rem 0.5rem; border-radius: 6px; color: var(--muted);
+}
+
+.grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; }
+@media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+
+section, aside {
+  background: #12141a; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px;
+}
+section h2, aside h2 { margin-top: 0; }
+
+.list { display: flex; flex-direction: column; gap: 0.6rem; }
+.item { padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px; background: #0c0d11; }
+.item .meta { color: var(--muted); font-size: 0.86rem; margin-bottom: 0.25rem; }
+.item .snippet { white-space: pre-wrap; line-height: 1.35; }
+
+.answer {
+  min-height: 160px; border: 1px solid var(--border); border-radius: 6px; background: #0c0d11;
+  padding: 0.6rem; white-space: pre-wrap;
+}
+
+footer { margin-top: 1rem; color: var(--muted); }
+code { color: var(--accent2); }

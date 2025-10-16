@@ -1,0 +1,10 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+pandas==2.2.2
+numpy==1.26.4
+weaviate-client==4.6.3
+sentence-transformers==2.7.0
+torch==2.2.2
+pydantic==2.8.2
+python-dotenv==1.0.1
+pyarrow>=14.0.1
