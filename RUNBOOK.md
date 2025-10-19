@@ -127,6 +127,26 @@ curl -s http://localhost:8083/search -H 'content-type: application/json' \
 # ANSWER (RAG)
 curl -s http://localhost:8083/answer -H 'content-type: application/json' \
   -d '{"query":"Explain the Abhidhamma in brief","top_k":8,"alpha":0.5}' | jq .
+
+# Eample queries
+
+# Search #1
+curl -s http://localhost:8083/answer -H 'content-type: application/json' \
+  -d '{"query":"Which 2 things suddenly happened to plants as a sign that the Buddha-to-be will soon become a Buddha?","top_k":8,"alpha":0.5}' | jq .
+
+# Search #2
+curl -s http://localhost:8083/answer -H 'content-type: application/json' \
+  -d '{"query":"What was the kind of nutriment that an ascetic decided to eat, which helped him to then achieve psychic powers?","top_k":8,"alpha":0.5}' | jq .
+
+curl -s http://localhost:8083/answer -H 'content-type: application/json' \
+  -d '{"query":"In which ancient city was available abundance of precious stones?","top_k":8,"alpha":0.5}' | jq .
+
+curl -s http://localhost:8083/answer -H 'content-type: application/json' \
+  -d '{"query":"What is the meaning of Dhamma in the context of understanding reality as it is?","top_k":8,"alpha":0.5}' | jq .
+
+curl -s http://localhost:8083/answer -H 'content-type: application/json' \
+  -d '{"query":"What did the Buddha do, when he found out that deities still have a doubt about him?","top_k":8,"alpha":0.5}' | jq .
+
 ```
 
 **What to check**

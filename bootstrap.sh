@@ -13,23 +13,23 @@ fi
 
 
 
-#pip install -r requirements.txt
+pip install -r requirements.txt
 
-#echo ">>> Building and starting the stack..."
-#docker compose up -d --build
+echo ">>> Building and starting the stack..."
+docker compose up -d --build
 
-#echo ">>> Waiting for Weaviate to be ready..."
-#for i in $(seq 1 60); do
-#  if curl -fsS http://localhost:8080/v1/.well-known/ready >/dev/null; then
-#    echo "Weaviate is ready."
-#    break
-#  fi
-#  sleep 2
-#done
+echo ">>> Waiting for Weaviate to be ready..."
+for i in $(seq 1 60); do
+  if curl -fsS http://localhost:8080/v1/.well-known/ready >/dev/null; then
+    echo "Weaviate is ready."
+    break
+  fi
+  sleep 2
+done
 
 sleep 5  
-#echo "Initializing Weaviate schema..."
-#python3 services/embedding/weaviate_schema.py
+echo "Initializing Weaviate schema..."
+python3 services/embedding/weaviate_schema.py
 
 
 echo ">>> Running ETL on ${CSV_PATH} -> ${OUT_PARQUET}"
