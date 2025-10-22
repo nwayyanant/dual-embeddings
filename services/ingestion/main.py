@@ -1,4 +1,10 @@
 # services/ingestion/main.py
+
+# This code defines a FastAPI-based ingestion service 
+# for processing multilingual CSV files
+#  (e.g., Pali-English texts) and converting them into 
+# normalized Parquet format using a configurable schema.
+
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 from typing import Dict, List, Optional

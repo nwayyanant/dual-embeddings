@@ -1,0 +1,76 @@
+--- a/services/search/main.py
++++ b/services/search/main.py
+@@ import statements
+ import os
+ import weaviate
+ import httpx
+ from fastapi import FastAPI
+ from pydantic import BaseModel
+ from fastapi.middleware.cors import CORSMiddleware
+ from .language import detect_lang, strip_diacritics
+ from .rag import LLMProvider, build_prompt, make_bilingual_answer
++from reranker import Reranker
+
+@@ initialization
+ WEAVIATE_URL = os.getenv("WEAVIATE_URL", "http://weaviate:8080")
+ EMBEDDING_URL = os.getenv("EMBEDDING_URL", "http://embedding:8082")
+ CLASS = "Paragraph"
+
+ app = FastAPI(title="Semantic Search + RAG Service")
+
+@@ CORS setup
+ origins = os.getenv("CORS_ORIGINS", "http://localhost:8084,http://127.0.0.1:8084").split(",")
+ app.add_middleware(
+     CORSMiddleware,
+     allow_origins=[o.strip() for o in origins],
+     allow_credentials=False,
+     allow_methods=["*"],
+     allow_headers=["*"],
+ )
+
+ client = weaviate.Client(WEAVIATE_URL)
+ llm = LLMProvider()
++reranker = Reranker()
+
+@@ /search endpoint
+ @app.post("/search")
+ async def search(body: SearchBody):
+     try:
+         lang = detect_lang(body.query)
+         keyword_query = strip_diacritics(body.query) if lang == "pali" else body.query
+
+         q_vec = await get_query_vector(body.query)
+
+         q = client.query.get(
+             CLASS, ["doc_id","book_id","para_id","pali_paragraph","translation_paragraph"]
+         )
+         if q_vec is not None:
+             q = q.with_hybrid(query=keyword_query, alpha=body.alpha, vector=q_vec)
+         else:
+             q = q.with_hybrid(query=keyword_query, alpha=0.0)  # BM25-only fallback
+
+         res = q.with_limit(max(100, body.top_k)).do()
+         hits = [{"snippet": build_snippet(o), **o} for o in res["data"]["Get"][CLASS]]
+
+         # Fallbacks if empty
+         if not hits and q_vec is not None:
+             vec_only = client.query.get(CLASS, ["doc_id","book_id","para_id","pali_paragraph","translation_paragraph"]) \
+                         .with_hybrid(query="", alpha=1.0, vector=q_vec) \
+                         .with_limit(max(100, body.top_k)).do()
+             hits = [{"snippet": build_snippet(o), **o} for o in vec_only["data"]["Get"][CLASS]]
+
++        # Apply reranking
++        reranked_hits = reranker.rerank(body.query, hits, text_key="snippet", top_k=body.top_k)
++
++        return {
++            "query_lang": lang,
++            "alpha": body.alpha,
++            "results": reranked_hits
++        }
+
+         return {"query_lang": lang, "alpha": body.alpha, "results": hits[:body.top_k]}
+     
+     except Exception as e:
+             import traceback
+             traceback.print_exc()
+             return {"error": str(e)}

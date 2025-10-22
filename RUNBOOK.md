@@ -147,7 +147,50 @@ curl -s http://localhost:8083/answer -H 'content-type: application/json' \
 curl -s http://localhost:8083/answer -H 'content-type: application/json' \
   -d '{"query":"What did the Buddha do, when he found out that deities still have a doubt about him?","top_k":8,"alpha":0.5}' | jq .
 
+
+# Another Way of search 
+curl -fsS -X POST http://localhost:8083/search \
+  -H "Content-Type: application/json" \
+  -d '{"query":"What is Abhidhamma?","top_k":5,"alpha":0.5}' | jq '.results[0:3][] | {doc_id, book_id, para_id}'
+
+curl -fsS -X POST http://localhost:8083/answer \
+  -H "Content-Type: application/json" \
+  -d '{"query":"What is Abhidhamma?","top_k":10,"alpha":0.5}' | jq '.answer'
+
+curl -fsS -X POST http://localhost:8083/answer \
+  -H "Content-Type: application/json" \
+  -d '{"query":"Which 2 things suddenly happened to plants as a sign that the Buddha-to-be will soon become a Buddha?","top_k":10,"alpha":0.5}' | jq '.answer'
+
+  curl -fsS -X POST http://localhost:8083/answer \
+  -H "Content-Type: application/json" \
+  -d '{"query":"What was the kind of nutriment that an ascetic decided to eat, which helped him to then achieve psychic powers?","top_k":10,"alpha":0.5}' | jq '.answer'
+
+  curl -fsS -X POST http://localhost:8083/answer \
+  -H "Content-Type: application/json" \
+  -d '{"query":"In which ancient city was available abundance of precious stones?","top_k":10,"alpha":0.5}' | jq '.answer'  
+
+  curl -fsS -X POST http://localhost:8083/answer \
+  -H "Content-Type: application/json" \
+  -d '{"query":"What is the meaning of Dhamma in the context of understanding reality as it is?","top_k":10,"alpha":0.5}' | jq '.answer'  
+
+  curl -fsS -X POST http://localhost:8083/answer \
+  -H "Content-Type: application/json" \
+  -d '{"query":"What did the Buddha do, when he found out that deities still have a doubt about him?","top_k":10,"alpha":0.5}' | jq '.answer'
+
 ```
+
+
+# Using Swagger UI 
+
+ go to: http://localhost:8083/search/docs 
+
+ execte : 
+ ```bash
+ {
+  "query": "Which 2 things suddenly happened to plants as a sign that the Buddha-to-be will soon become a Buddha?",
+  "top_k": 8,
+  "alpha": 1
+}
 
 **What to check**
 - `/search` returns **both** `pali_paragraph` and `translation_paragraph`.
@@ -179,6 +222,11 @@ curl -s -X POST http://localhost:8081/ingest \
 curl -s -X POST http://localhost:8082/index \
   -H "Content-Type: application/json" \
   -d '{"parquet_path":"data/out/normalized.parquet","include_langs":["multilingual"]}'
+
+# with diacritics.parquet 20251019
+curl -fsS -X POST http://localhost:8082/index \
+   -H "Content-Type: application/json" \
+   -d '{"parquet_path": "data/out/normalized_with_diacritics.parquet", "include_langs": ["multilingual"]}'
 ```
 
 5. **Search / Answer** (use commands from Step 5)

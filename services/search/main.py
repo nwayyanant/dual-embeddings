@@ -7,7 +7,9 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from .language import detect_lang, strip_diacritics
 from .rag import LLMProvider, build_prompt, make_bilingual_answer
+from .reranker import Reranker
 
+reranker = Reranker() 
 WEAVIATE_URL = os.getenv("WEAVIATE_URL", "http://weaviate:8080")
 EMBEDDING_URL = os.getenv("EMBEDDING_URL", "http://embedding:8082")
 CLASS = "Paragraph"
@@ -76,7 +78,9 @@ async def search(body: SearchBody):
                         .with_limit(max(100, body.top_k)).do()
             hits = [{"snippet": build_snippet(o), **o} for o in vec_only["data"]["Get"][CLASS]]
 
-        return {"query_lang": lang, "alpha": body.alpha, "results": hits[:body.top_k]}
+        reranked_hit = reranker.rerank(body.query, hits, text_key="snippet", top_k=body.top_k)
+
+        return {"query_lang": lang, "alpha": body.alpha, "results": reranked_hit}
     
     except Exception as e:
             import traceback

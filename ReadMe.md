@@ -1,5 +1,5 @@
 
-# What we’ll build
+# What we'll build
 
 
 ## Services (each independently scalable):
@@ -33,10 +33,23 @@ How to run (dev)
 Put CSV at ./data/<pali_english>.csv with columns:
 book_id, para_id, pali_paragraph, english_paragraph
 (Optional now: chinese_paragraph, russian_paragraph)
-docker compose up -d --build
+docker compose up -d --build or run bootstrap.sh in one go.
 Call Ingestion to produce parquet.
 Embedding worker watches for parquet path (via env/HTTP), computes vectors, upserts to Weaviate.
-Query Search API:
+
+# Query Search API:
 
 POST http://localhost:8082/search with {"query":"anicca", "top_k":10}
 POST http://localhost:8082/answer for RAG answer.
+
+# Using Swagger UI 
+
+ go to: http://localhost:8083/docs 
+
+ execte : 
+ ```bash 
+ {
+  "query": "Which 2 things suddenly happened to plants as a sign that the Buddha-to-be will soon become a Buddha?",
+  "top_k": 8,
+  "alpha": 0.5 
+}
