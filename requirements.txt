@@ -1,2 +1,2 @@
 weaviate-client==4.6.3
-python3
+python>=3.9.0
