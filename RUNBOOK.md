@@ -184,14 +184,14 @@ curl -fsS -X POST http://localhost:8083/answer \
 
  go to: http://localhost:8083/search/docs 
 
- execte : 
+ execute : 
  ```bash
  {
   "query": "Which 2 things suddenly happened to plants as a sign that the Buddha-to-be will soon become a Buddha?",
   "top_k": 8,
   "alpha": 1
-}
-
+ }
+ ```
 **What to check**
 - `/search` returns **both** `pali_paragraph` and `translation_paragraph`.
 - `/answer` shows a **summary** + **citations** with bilingual lines under each citation.
