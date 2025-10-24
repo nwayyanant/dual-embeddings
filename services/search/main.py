@@ -78,9 +78,12 @@ async def search(body: SearchBody):
                         .with_limit(max(100, body.top_k)).do()
             hits = [{"snippet": build_snippet(o), **o} for o in vec_only["data"]["Get"][CLASS]]
 
-        reranked_hit = reranker.rerank(body.query, hits, text_key="snippet", top_k=body.top_k)
+        reranked_hits = reranker.rerank(body.query, hits, text_key="snippet", top_k=body.top_k)
 
-        return {"query_lang": lang, "alpha": body.alpha, "results": reranked_hit}
+        for r in reranked_hits:
+            r["score"] = r.pop("_rerank_score", 0.0)
+
+        return {"query_lang": lang, "alpha": body.alpha, "results": reranked_hits}
     
     except Exception as e:
             import traceback

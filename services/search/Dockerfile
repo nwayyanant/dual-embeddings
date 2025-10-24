@@ -4,6 +4,11 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 COPY services/search/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Add torch and FlagEmbedding
+# RUN pip install torch --index-url https://download.pytorch.org/whl/cpu
+# RUN pip install FlagEmbedding
+
 COPY services /app/services
 EXPOSE 8083
 ENV WEAVIATE_URL=http://weaviate:8080

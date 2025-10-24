@@ -8,6 +8,7 @@ except Exception:
 
 class Reranker:
     def __init__(self, model_name="BAAI/bge-reranker-v2-m3"):
+        print(f"🔍 USE_RERANKER is set to: {USE_RERANKER}")
         if USE_RERANKER:
             self.model = FlagReranker(model_name, use_fp16=True)
         else:
