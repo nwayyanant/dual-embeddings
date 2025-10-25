@@ -40,6 +40,10 @@ class EmbedBody(BaseModel):
     texts: list[str]
     normalize: bool = True
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 @app.get("/")
 def root():
     return {"service": "embedding", "status": "ok"}

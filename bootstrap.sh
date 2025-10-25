@@ -12,20 +12,48 @@ else
 fi
 
 
+wait_for_service() {
+  local name="$1"
+  local url="$2"
+  local max_wait="${3:-120}"
+  local waited=0
+  local delay=2
+
+  echo "⏳ Waiting for $name ($url)..."
+
+  until curl -fsSL "$url" >/dev/null 2>&1; do
+    sleep "$delay"
+    waited=$((waited+delay))
+    if [ "$waited" -ge "$max_wait" ]; then
+      echo "❌ Timeout: $name not ready after ${max_wait}s" >&2
+      exit 1
+    fi
+    if [ "$delay" -lt 10 ]; then
+      delay=$((delay*2))
+    fi
+  done
+  echo "✅ $name ready after ${waited}s."
+}
 
 pip install -r requirements.txt
 
 echo ">>> Building and starting the stack..."
 docker compose up -d --build
 
-echo ">>> Waiting for Weaviate to be ready..."
-for i in $(seq 1 60); do
-  if curl -fsS http://localhost:8080/v1/.well-known/ready >/dev/null; then
-    echo "Weaviate is ready."
-    break
-  fi
-  sleep 2
-done
+
+echo ">>> Waiting for services to be ready..."
+wait_for_service "weaviate" "http://localhost:8080/v1/.well-known/ready" 300
+wait_for_service "ingestion" "http://localhost:8081/health" 200
+wait_for_service "embedding" "http://localhost:8082/health" 200
+wait_for_service "search" "http://localhost:8083/health" 200
+
+# for i in $(seq 1 60); do
+  # if curl -fsS http://localhost:8080/v1/.well-known/ready >/dev/null; then
+    # echo "Weaviate is ready."
+    # break
+  # fi
+  # sleep 2
+# done
 
 sleep 5  
 #echo "Initializing Weaviate schema..."
@@ -62,3 +90,4 @@ echo "  - Search/RAG: http://localhost:8083/docs"
 echo "  - Frontend UI: http://localhost:8084"
 echo "      Type queries (e.g., 'anicca' or 'What is Abhidhamma?')"
 echo "      Adjust Top-K and α, click Search and Ask (RAG).
+

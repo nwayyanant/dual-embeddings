@@ -48,6 +48,10 @@ async def get_query_vector(q: str) -> list[float] | None:
     except Exception:
         return None  # graceful degrade to BM25-only
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 @app.get("/")
 def root():
     return {"service": "search", "status": "ok", "embedding_url": EMBEDDING_URL}

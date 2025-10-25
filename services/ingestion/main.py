@@ -37,6 +37,10 @@ class IngestBody(BaseModel):
     out_parquet: str = Field(..., description="Path to write normalized parquet")
     schema: Optional[SchemaConfig] = None
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 @app.get("/")
 def root():
     return {"service": "ingestion", "status": "ok"}
