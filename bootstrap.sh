@@ -59,6 +59,9 @@ sleep 5
 #echo "Initializing Weaviate schema..."
 #python3 services/embedding/weaviate_schema.py
 
+chmod +x services/embedding/weaviate_schema.py
+./services/embedding/weaviate_schema.py
+
 
 echo ">>> Running ETL on ${CSV_PATH} -> ${OUT_PARQUET}"
 curl -fsS -X POST http://localhost:8081/ingest \
