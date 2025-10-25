@@ -28,8 +28,8 @@ for i in $(seq 1 60); do
 done
 
 sleep 5  
-echo "Initializing Weaviate schema..."
-python3 services/embedding/weaviate_schema.py
+#echo "Initializing Weaviate schema..."
+#python3 services/embedding/weaviate_schema.py
 
 
 echo ">>> Running ETL on ${CSV_PATH} -> ${OUT_PARQUET}"
