@@ -95,10 +95,7 @@ curl -fsS -X POST http://localhost:${SEARCH_HOST_PORT}/answer \
 
 echo
 echo ">>> Done. Try interactive docs:"
-echo "  - Ingestion: http://localhost:${INGESTION_HOST_PORT}/docs"
-echo "  - Embedding: http://localhost:${EMBEDDING_HOST_PORT}/docs"
 echo "  - Search/RAG: http://localhost:${SEARCH_HOST_PORT}/docs"
-echo "  - Frontend UI: http://localhost:${FRONTEND_HOST_PORT}"
 echo "      Type queries (e.g., 'anicca' or 'What is Abhidhamma?')"
-echo "      Adjust Top-K and α, click Search and Ask (RAG).
+echo "      Adjust Top-K and α, click Search and Ask (RAG)."
 
