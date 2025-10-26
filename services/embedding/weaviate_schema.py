@@ -3,7 +3,7 @@ import weaviate
 import os
 
 CLASS = "Paragraph"
-WEAVIATE_URL = os.getenv("WEAVIATE_URL", "http://localhost:8080")
+WEAVIATE_URL = os.getenv("WEAVIATE_URL", "http://localhost:8090")
 
 def ensure_schema(client: weaviate.Client, named_vectors: bool = False):
     """
