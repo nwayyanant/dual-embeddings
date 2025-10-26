@@ -1,9 +1,9 @@
 
 services:
   weaviate:
-    image: cr.weaviate.io/semitechnologies/weaviate:1.33.1
+    image: semitechnologies/weaviate:1.24.10
     ports: 
-      - "8080:8080"
+      - "${WEAVIATE_HOST_PORT:-8090}:8080"
       - "50051:50051"
     container_name: weaviate
     environment:
@@ -12,11 +12,10 @@ services:
       PERSISTENCE_DATA_PATH: "/var/lib/weaviate"
       DEFAULT_VECTORIZER_MODULE: "none"   # we push external vectors
       ENABLE_MODULES: "bm25"             # hybrid: BM25 + vector
-      CLUSTER_HOSTNAME: "node1"
     volumes:
       - weaviate_data:/var/lib/weaviate
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/v1/.well-known/ready"]
+      test: ["CMD", "curl", "-f", "http://localhost:${WEAVIATE_HOST_PORT}/v1/.well-known/ready"]
       interval: 5s
       timeout: 5s
       retries: 60
