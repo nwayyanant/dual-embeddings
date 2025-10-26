@@ -85,13 +85,13 @@ echo ">>> Smoke tests: semantic search and RAG answer"
 echo "Search: 'anicca'"
 curl -fsS -X POST http://localhost:${SEARCH_HOST_PORT}/search \
   -H "Content-Type: application/json" \
-  -d "{\"query\":\"anicca\",\"top_k\":5,\"alpha\":${ALPHA}}" | jq '.results[0:3][] | {doc_id,book_id,para_id}'
+  -d "{\"query\":\"anicca\",\"top_k\":5,\"alpha\":${ALPHA}}" 
 
 echo
 echo "Answer: 'What is Abhidhamma?'"
 curl -fsS -X POST http://localhost:${SEARCH_HOST_PORT}/answer \
   -H "Content-Type: application/json" \
-  -d "{\"query\":\"What is Abhidhamma?\",\"top_k\":10,\"alpha\":${ALPHA}}" | jq '.answer[0:400]'
+  -d "{\"query\":\"What is Abhidhamma?\",\"top_k\":10,\"alpha\":${ALPHA}}"
 
 echo
 echo ">>> Done. Try interactive docs:"
