@@ -37,6 +37,7 @@ pali-search/
     frontend/    # FastAPI UI
   data/
     251005Tipitaka500lines.csv
+    MN5chunk.csv
 ```
 
 > Your CSV must be at `data/251005Tipitaka500lines.csv`.
@@ -215,7 +216,7 @@ curl -fsS http://localhost:8080/v1/.well-known/ready
 ```bash
 curl -s -X POST http://localhost:8081/ingest \
   -H "Content-Type: application/json" \
-  -d '{"csv_path":"data/251005Tipitaka500lines.csv","out_parquet":"data/out/normalized.parquet"}'
+  -d '{"csv_path":"data/MN5chunk.csv","out_parquet":"data/out/normalized.parquet"}'
 ```
 
 4. **Index embeddings**

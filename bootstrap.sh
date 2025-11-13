@@ -5,7 +5,7 @@ set -euo pipefail
 if [ -f ".env" ]; then
   set -a; source .env; set +a
 else
-  CSV_PATH=${CSV_PATH:-data/251005Tipitaka500lines.csv}
+  CSV_PATH=${CSV_PATH:-data/MN5chunk.csv}
   OUT_PARQUET=${OUT_PARQUET:-data/out/normalized.parquet}
   INCLUDE_LANGS=${INCLUDE_LANGS:-'["multilingual"]'}
   ALPHA=${ALPHA:-0.5}
