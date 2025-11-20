@@ -72,8 +72,17 @@ async def search(body: SearchBody):
         else:
             q = q.with_hybrid(query=keyword_query, alpha=0.0)  # BM25-only fallback
 
+        # IMPORTANT: Request _additional metadata to get original scores
+        q = q.with_additional(["score", "explainScore"])
+        
         res = q.with_limit(max(100, body.top_k)).do()
         hits = [{"snippet": build_snippet(o), **o} for o in res["data"]["Get"][CLASS]]
+
+        # Preserve original Weaviate scores
+        for hit in hits:
+            additional = hit.pop("_additional", {})
+            hit["_weaviate_score"] = additional.get("score", 0.0)
+            hit["_explain_score"] = additional.get("explainScore", "")
 
         # Fallbacks if empty
         if not hits and q_vec is not None:
@@ -81,11 +90,31 @@ async def search(body: SearchBody):
                         .with_hybrid(query="", alpha=1.0, vector=q_vec) \
                         .with_limit(max(100, body.top_k)).do()
             hits = [{"snippet": build_snippet(o), **o} for o in vec_only["data"]["Get"][CLASS]]
+            for hit in hits:
+                additional = hit.pop("_additional", {})
+                hit["_weaviate_score"] = additional.get("score", 0.0)
 
+        # Rerank using the reranker        
         reranked_hits = reranker.rerank(body.query, hits, text_key="snippet", top_k=body.top_k)
 
+        # Assign final scores with better fallback logic
         for r in reranked_hits:
-            r["score"] = r.pop("_rerank_score", 0.0)
+            # Priority: rerank score > weaviate score > epsilon
+            rerank_score = r.pop("_rerank_score", None)
+            weaviate_score = r.pop("_weaviate_score", None)
+            
+            if rerank_score is not None:
+                r["score"] = float(rerank_score)
+                r["score_type"] = "reranked"
+            elif weaviate_score is not None:
+                r["score"] = float(weaviate_score)
+                r["score_type"] = "hybrid"
+            else:
+                r["score"] = 1e-9
+                r["score_type"] = "fallback"
+            
+            # Clean up explain score if exists
+            r.pop("_explain_score", None)
 
         return {"query_lang": lang, "alpha": body.alpha, "results": reranked_hits}
     

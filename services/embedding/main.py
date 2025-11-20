@@ -18,7 +18,8 @@ app = FastAPI(title="Embedding & Indexer Service")
 # Load once; cache vectors in-memory to avoid recompute for repeated queries
 labse = SentenceTransformer("sentence-transformers/LaBSE")
 
-def _encode(text: str) -> np.ndarray:
+def _encode(text: str) -> np.ndarray: # write a unit test for this function
+    if text == "": raise ValueError("Input text cannot be empty")
     return labse.encode([text or ""], normalize_embeddings=True, convert_to_numpy=True).astype(np.float32)[0]
 
 # LRU cache for single-text vectors (default maxsize=4096; override via env)
